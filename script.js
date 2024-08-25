@@ -27,23 +27,25 @@ function showPosition(position) {
             var elevation = data.elevation;
             console.log("Elevation: " + elevation);
 
-            var iframe = document.getElementById("map-iframe");
+            var images = document.querySelectorAll(".map-image");
 
             // 標高に基づいて視点角度を計算
             var minElevation = 0;
             var maxElevation = 300;
-            var minAngle = 60; // 最低角度（度）
-            var maxAngle = -60; // 最高角度（度）
+            var minAngle = 50; // 最低角度（度）
+            var maxAngle = -50; // 最高角度（度）
 
             // 標高に基づいて視点角度を線形に補間
             var angle = minAngle + ((elevation - minElevation) / (maxElevation - minElevation)) * (maxAngle - minAngle);
 
-            // 角度に応じた変形を適用
-            iframe.style.transform = `rotateX(${angle}deg)`;
+            // すべての画像に角度に応じた変形を適用
+            images.forEach(img => {
+                img.style.transform = `rotateX(${angle}deg)`;
+            });
 
             // 標高の表示
             var element = document.getElementById("elevation");
-            element.textContent = "標高: " + elevation + " メートル";
+            element.textContent = "標高: " + elevation + " m";
         })
         .catch(error => {
             console.error("Error fetching JSON data:", error);
