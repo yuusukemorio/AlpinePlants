@@ -1,0 +1,42 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    margin: 0;
+    padding: 20px;
+}
+
+#iframe-container {
+    width: 100%;
+    height: 600px;
+    perspective: 1000px; /* 3D効果を実現するための視点の深さ */
+    position: relative;
+    overflow: hidden;
+}
+
+#map-iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    transform-style: preserve-3d; /* 子要素の3D変形を適用する */
+    transition: transform 0.5s; /* 変形のスムーズなアニメーション */
+    display: block;
+}
+
+iframe {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: none;
+    position: relative;
+}
+
+iframe img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* 画像を枠内に収める */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* 画像を中央に配置 */
+}
