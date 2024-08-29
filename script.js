@@ -1,70 +1,56 @@
-let intervalId = null; // インターバルIDを保持する変数
-
 document.addEventListener("DOMContentLoaded", () => {
-    // ページが読み込まれたときに位置情報の取得を開始
     getLocation();
-    // 5秒ごとにgetLocationを呼び出す
-    intervalId = setInterval(getLocation, 5000);
+    setInterval(getLocation, 5000);
 });
 
 function getLocation() {
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(showPosition, showError);
     } else {
-        alert("このブラウザでは位置情報がサポートされていません。");
+        alert("Geolocation is not supported by this browser.");
     }
 }
 
 function showPosition(position) {
-    var lat = position.coords.latitude;
-    var lon = position.coords.longitude;
-
-    var url = "https://cyberjapandata2.gsi.go.jp/general/dem/scripts/getelevation.php?lon=" + lon + "&lat=" + lat + "&outtype=JSON";
+    const lat = position.coords.latitude;
+    const lon = position.coords.longitude;
+    const url = `https://cyberjapandata2.gsi.go.jp/general/dem/scripts/getelevation.php?lon=${lon}&lat=${lat}&outtype=JSON`;
 
     fetch(url)
         .then(response => response.json())
         .then(data => {
-            var elevation = data.elevation;
-            console.log("Elevation: " + elevation);
+            const elevation = data.elevation;
+            document.getElementById("elevation").textContent = `Elevation: ${elevation} m`;
 
-            var images = document.querySelectorAll(".map-image");
+            // 画像ファイル名を生成
+            const minElevation = 0;
+            const maxElevation = 250;
+            const fileNumber = Math.round(((elevation - minElevation) / (maxElevation - minElevation)) * 249) + 1;
+            const fileName = fileNumber.toString().padStart(4, '0') + '.png';
+            
+            // 画像のパスを修正
+            const imgPath = `img/${fileName}`;
 
-            // 標高に基づいて視点角度を計算
-            var minElevation = 0;
-            var maxElevation = 300;
-            var minAngle = 50; // 最低角度（度）
-            var maxAngle = -50; // 最高角度（度）
-
-            // 標高に基づいて視点角度を線形に補間
-            var angle = minAngle + ((elevation - minElevation) / (maxElevation - minElevation)) * (maxAngle - minAngle);
-
-            // すべての画像に角度に応じた変形を適用
-            images.forEach(img => {
-                img.style.transform = `rotateX(${angle}deg)`;
-            });
-
-            // 標高の表示
-            var element = document.getElementById("elevation");
-            element.textContent = "標高: " + elevation + " m";
+            // 画像を更新
+            const imgElement = document.getElementById("map-image");
+            imgElement.src = imgPath;
         })
-        .catch(error => {
-            console.error("Error fetching JSON data:", error);
-        });
+        .catch(error => console.error("Error fetching elevation data:", error));
 }
 
 function showError(error) {
-    switch(error.code) {
+    switch (error.code) {
         case error.PERMISSION_DENIED:
-            alert("位置情報の取得が拒否されました。");
+            alert("Geolocation permission denied.");
             break;
         case error.POSITION_UNAVAILABLE:
-            alert("位置情報を取得できませんでした。");
+            alert("Position information unavailable.");
             break;
         case error.TIMEOUT:
-            alert("位置情報の取得がタイムアウトしました。");
+            alert("Geolocation request timed out.");
             break;
         case error.UNKNOWN_ERROR:
-            alert("未知のエラーが発生しました。");
+            alert("An unknown error occurred.");
             break;
     }
 }
