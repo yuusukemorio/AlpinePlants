@@ -22,16 +22,13 @@ function showPosition(position) {
             const elevation = data.elevation;
             document.getElementById("elevation").textContent = `標高 : ${elevation} m`;
 
-            // 画像ファイル名を生成
             const minElevation = 0;
             const maxElevation = 250;
             const fileNumber = Math.round(((elevation - minElevation) / (maxElevation - minElevation)) * 249) + 1;
             const fileName = fileNumber.toString().padStart(4, '0') + '.png';
             
-            // 画像のパスを修正
             const imgPath = `img/${fileName}`;
 
-            // 画像を更新
             const imgElement = document.getElementById("map-image");
             imgElement.src = imgPath;
         })
