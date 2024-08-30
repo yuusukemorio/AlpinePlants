@@ -20,7 +20,7 @@ function showPosition(position) {
         .then(response => response.json())
         .then(data => {
             const elevation = data.elevation;
-            document.getElementById("elevation").textContent = `Elevation: ${elevation} m`;
+            document.getElementById("elevation").textContent = `標高 : ${elevation} m`;
 
             // 画像ファイル名を生成
             const minElevation = 0;
